@@ -37,6 +37,10 @@ const BEGIN = 0.5; // let the room settle before anything moves
 const STAGGER = 0.028;
 const TILE_DURATION = 1.0;
 const ASSEMBLED = BEGIN + TILES * STAGGER + TILE_DURATION * 0.65;
+const SWEEP_DELAY = 0.5;
+const SWEEP_DURATION = 2.2;
+/** When the whole performance is over and the shot is simply held. */
+const PERFORMANCE = ASSEMBLED + SWEEP_DELAY + SWEEP_DURATION;
 
 /** Deterministic pseudo-random in [0,1) — stable across server/client. */
 function jitter(index: number, salt: number) {
@@ -141,7 +145,11 @@ export default function AssemblingCanvas({ work }: { work: Work }) {
         className="pointer-events-none absolute inset-0 overflow-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: [0, 1, 0] }}
-        transition={{ duration: 2.2, delay: ASSEMBLED + 0.5, times: [0, 0.4, 1] }}
+        transition={{
+          duration: SWEEP_DURATION,
+          delay: ASSEMBLED + SWEEP_DELAY,
+          times: [0, 0.4, 1],
+        }}
       >
         <motion.div
           className="absolute inset-y-0 -left-1/3 w-1/3 skew-x-12"
@@ -152,8 +160,8 @@ export default function AssemblingCanvas({ work }: { work: Work }) {
           initial={{ x: "-40%" }}
           animate={{ x: "420%" }}
           transition={{
-            duration: 2.2,
-            delay: ASSEMBLED + 0.5,
+            duration: SWEEP_DURATION,
+            delay: ASSEMBLED + SWEEP_DELAY,
             ease: [0.4, 0, 0.2, 1],
           }}
         />
@@ -165,4 +173,4 @@ export default function AssemblingCanvas({ work }: { work: Work }) {
   );
 }
 
-export { ASSEMBLED };
+export { ASSEMBLED, PERFORMANCE };
