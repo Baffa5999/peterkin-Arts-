@@ -25,6 +25,40 @@ npm run dev          # http://localhost:3000
 
 ---
 
+## ⚠ First: add the artwork files
+
+**This repository contains the source code but not the images.** They were
+pushed through an API that only accepts text, which re-encodes binary files
+and corrupts them — a 57KB JPEG arrived as an unopenable 86KB file, so the
+transfer was abandoned rather than shipped broken.
+
+Get `peterkin-arts-assets.tar.gz` (supplied alongside this repo), then from
+the project root:
+
+```bash
+tar -xzf peterkin-arts-assets.tar.gz     # restores public/ and src/app/icon.png
+npm install
+npm run dev
+```
+
+That archive contains:
+
+| Path | What |
+| --- | --- |
+| `public/works/originals/*.jpg` | The master photographs — the real source of truth |
+| `public/works/*.jpg` | The optimised versions the site serves |
+| `public/peterkin-*.png` | Logo lockup and JP monogram |
+| `src/app/icon.png` | Favicon |
+
+If you only have the originals, you don't need the rest — drop them into
+`public/works/originals/` and run `npm run images` to regenerate everything.
+
+Once the images are in place, commit them normally with `git add` and `git
+push` from your own machine. Git itself handles binary files perfectly well;
+it was only the API bridge that couldn't.
+
+---
+
 ## Adding a new painting
 
 You should never need to touch a component to add work.
