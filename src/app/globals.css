@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Design tokens — a darkened gallery room.
+   The paintings are the only saturated colour on this site.
+   Everything else is graphite, ash and warm paper-white.
+------------------------------------------------------------------- */
+@theme {
+  --color-void: #070605;
+  --color-room: #0d0b0a;
+  --color-wall: #14110f;
+  --color-plinth: #1c1815;
+  --color-rule: #2a2421;
+
+  --color-paper: #f4efe6;
+  --color-ash: #a49b90;
+  --color-dust: #6b635b;
+
+  /* Taken from the artist's own logo — the gold-leaf "Arts" script. */
+  --color-brass: #c8912a;
+  --color-brass-lit: #e0b755;
+
+  --font-display: "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Motion — long, filmic easings. Nothing snaps. */
+  --ease-film: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-dolly: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+html {
+  background-color: var(--color-void);
+  color: var(--color-paper);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  overflow-x: hidden;
+  background-color: var(--color-void);
+}
+
+/* Lenis smooth-scroll requirements */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Typographic utilities -------------------------------------------- */
+.label {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-dust);
+}
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 300;
+  line-height: 0.94;
+  letter-spacing: -0.02em;
+}
+
+/* The spotlight — a soft pool of light behind a hung canvas --------- */
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: -18%;
+  background: radial-gradient(
+    ellipse at 50% 42%,
+    rgba(255, 244, 226, 0.11) 0%,
+    rgba(255, 244, 226, 0.04) 38%,
+    transparent 72%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Canvases sit on the wall, not flat against the screen ------------- */
+.hung {
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.6),
+    0 24px 60px -12px rgba(0, 0, 0, 0.8),
+    0 60px 120px -30px rgba(0, 0, 0, 0.65);
+}
+
+/* Film grain — kills banding in the dark gradients and adds texture */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+::selection {
+  background: var(--color-brass);
+  color: var(--color-void);
+}
+
+/* Scrollbar — barely there */
+::-webkit-scrollbar {
+  width: 7px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-void);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-plinth);
+}
+
+/* ------------------------------------------------------------------
+   Reduced motion: the whole cinematic layer collapses to plain fades.
+   This is not an afterthought — it is a supported way to view the site.
+------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
