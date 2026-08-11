@@ -33,6 +33,8 @@ export type Work = {
   tint: string;
   /** Show in the featured cinematic sequence. Aim for 3–5. */
   featured?: boolean;
+  /** The opening shot. Exactly one work should carry this. */
+  hero?: boolean;
   status?: "available" | "sold" | "private collection";
 };
 
@@ -72,6 +74,7 @@ export const works: Work[] = [
     height: 1132,
     tint: "#a8a838",
     featured: true,
+    hero: true,
   },
   {
     slug: "the-child",
@@ -98,6 +101,9 @@ export const works: Work[] = [
 /* ---------------------------------------------------------------- */
 
 export const featuredWorks = works.filter((w) => w.featured);
+
+/** The opening shot. Falls back to the first work if none is flagged. */
+export const heroWork = works.find((w) => w.hero) ?? works[0];
 
 export const series = Array.from(
   new Set(works.map((w) => w.series).filter(Boolean)),

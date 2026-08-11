@@ -26,10 +26,13 @@ export type Artist = {
 
 export const artist: Artist = {
   name: "Peterkin Arts",
-  discipline: "Hyperrealist portraiture",
+  discipline: "Portraits in graphite and colour",
   based: "Nigeria",
 
-  tagline: "Graphite held close enough to the face that it stops being a drawing.",
+  /* The opening shot is now the cubist canvas, so this line has to
+     carry both practices — a graphite-only tagline read as a caption
+     for the wrong painting. */
+  tagline: "A face held close in graphite, then taken apart in colour.",
 
   statement: [
     "The work is portraiture, mostly in graphite and charcoal, worked to the point where the paper disappears and only the person is left. A beard becomes thousands of separate marks. A lens becomes a small room reflected back at you.",
