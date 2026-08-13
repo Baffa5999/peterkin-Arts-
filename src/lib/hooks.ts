@@ -2,6 +2,24 @@
 
 import { useCallback, useSyncExternalStore } from "react";
 
+const noop = () => () => {};
+
+/**
+ * False during SSR and the hydration render, true afterwards.
+ *
+ * Used to hold back the hero video's `src` until the client knows the
+ * viewport. Setting it during hydration would pick the phone encode
+ * from the server snapshot and then swap to the desktop one a tick
+ * later — two downloads for one video.
+ */
+export function useHydrated() {
+  return useSyncExternalStore(
+    noop,
+    () => true,
+    () => false,
+  );
+}
+
 /**
  * SSR-safe media query.
  *

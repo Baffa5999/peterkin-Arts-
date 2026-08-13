@@ -7,11 +7,10 @@
  *   2. Run  `npm run images`  (optimises + measures it, prints an entry)
  *   3. Paste the printed entry below and fill in the details
  *
- * ⚠  TITLES, YEARS AND MEDIA BELOW ARE WORKING PLACEHOLDERS.
- *    They were inferred from the photographs, their signatures and
- *    their file dates — not supplied by the artist. Peterkin should
- *    correct every one of them. Nothing here is guesswork the viewer
- *    can see through, but it is still guesswork.
+ * ⚠  TITLES, YEARS AND MEDIA ARE WORKING PLACEHOLDERS.
+ *    Years are inferred from signatures on the work and from file
+ *    dates; media from how the surface reads in the photograph.
+ *    Peterkin should correct every one of them.
  */
 
 export type Work = {
@@ -29,72 +28,114 @@ export type Work = {
   height: number;
   /** Average colour — the placeholder shown while loading. */
   tint: string;
-  /** The opening shot. Exactly one work should carry this. */
+  /** The poster frame behind the hero film. Exactly one work. */
   hero?: boolean;
   status?: "available" | "sold" | "private collection";
 };
 
 export const works: Work[] = [
   {
-    slug: "the-cap",
-    title: "Man in a Flat Cap",
-    year: 2025,
+    slug: "the-suit",
+    title: "Man in a Dark Suit",
+    year: 2023,
     medium: "Graphite and charcoal on paper",
-    note: "Almost all of the drawing is in the beard and the reflections in the lenses — everything else is held back so those two can do the work.",
-    width: 1588,
-    height: 1836,
-    tint: "#c8c8c8",
-  },
-  {
-    slug: "hand-to-temple",
-    title: "Hand to Temple",
-    year: 2021,
-    medium: "Graphite and charcoal on paper",
-    note: "A study in restraint: the print of the blouse is the only place the drawing is allowed to be loud.",
-    width: 1424,
-    height: 1860,
-    tint: "#b8a8a8",
-  },
-  {
-    slug: "green-ground",
-    title: "Green Ground",
-    year: 2025,
-    medium: "Acrylic on canvas",
-    note: "A face assembled out of planes and arcs — the same subject as the portraits, taken apart and rebuilt in colour.",
-    width: 962,
-    height: 1132,
-    tint: "#a8a838",
+    width: 1665,
+    height: 2400,
+    tint: "#282828",
     hero: true,
   },
   {
-    slug: "the-child",
-    title: "The Child",
-    year: 2019,
+    slug: "the-lapel-pin",
+    title: "The Lapel Pin",
+    year: 2023,
     medium: "Graphite and charcoal on paper",
-    width: 931,
-    height: 1080,
-    tint: "#3a3a3a",
+    width: 1878,
+    height: 2400,
+    tint: "#c8c8c8",
   },
   {
-    slug: "the-fila",
-    title: "Elder in Fila",
+    slug: "braids",
+    title: "Braids",
     year: 2022,
-    medium: "Pastel on paper",
-    width: 712,
-    height: 841,
-    tint: "#685848",
+    medium: "Graphite and charcoal on paper",
+    width: 1751,
+    height: 2400,
+    tint: "#281818",
+  },
+  {
+    slug: "the-turban",
+    title: "White Turban",
+    year: 2020,
+    medium: "Graphite and charcoal on paper",
+    width: 610,
+    height: 820,
+    tint: "#686868",
+  },
+  {
+    slug: "ankara",
+    title: "Ankara",
+    year: 2025,
+    medium: "Acrylic on canvas",
+    width: 2400,
+    height: 2003,
+    tint: "#081828",
+  },
+  {
+    slug: "saxophone",
+    title: "Saxophone",
+    year: 2025,
+    medium: "Acrylic on canvas",
+    width: 1203,
+    height: 2400,
+    tint: "#081828",
+  },
+  {
+    slug: "the-dance",
+    title: "The Dance",
+    year: 2025,
+    medium: "Oil on canvas",
+    width: 1653,
+    height: 2400,
+    tint: "#384858",
+  },
+  {
+    slug: "the-cello",
+    title: "Strings",
+    year: 2025,
+    medium: "Oil on canvas",
+    width: 1560,
+    height: 2330,
+    tint: "#d8c898",
+  },
+  {
+    slug: "two-faces",
+    title: "Two Faces",
+    year: 2024,
+    medium: "Acrylic on canvas",
+    width: 1532,
+    height: 2400,
+    tint: "#989898",
+  },
+  {
+    slug: "the-hat",
+    title: "The Wide Hat",
+    year: 2025,
+    medium: "Acrylic on canvas",
+    width: 610,
+    height: 1155,
+    tint: "#b8a898",
   },
 ];
 
 /* ---------------------------------------------------------------- */
 
-/** The opening shot. Falls back to the first work if none is flagged. */
+/** The poster frame behind the hero film. */
 export const heroWork = works.find((w) => w.hero) ?? works[0];
 
 export const workSrc = (slug: string) => `/works/${slug}.jpg`;
 
 /**
- * Builds the "2025 · Graphite on paper · 90 × 60 cm" line, skipping any
+ * Builds the "2025 · Acrylic on canvas · 90 × 60 cm" line, skipping any
  * field that hasn't been filled in yet — so an unconfirmed dimension
  * never shows up as a dangling separator.
  */

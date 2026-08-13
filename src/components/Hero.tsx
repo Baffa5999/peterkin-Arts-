@@ -1,219 +1,169 @@
 "use client";
 
-import {
-  AnimatePresence,
-  motion,
-  useInView,
-  useScroll,
-  useTransform,
-} from "framer-motion";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { useEffect, useRef } from "react";
 import { artist } from "@/content/artist";
-import { heroWork, works, workSrc } from "@/content/works";
-import AssemblingCanvas, { PERFORMANCE } from "./AssemblingCanvas";
-import { useMediaQuery } from "@/lib/hooks";
+import { useHydrated, useMediaQuery } from "@/lib/hooks";
 
 /**
- * THE COLD OPEN — now a rotating one.
+ * THE COLD OPEN — a short film.
  *
- * Each painting composes itself out of scattered planes, holds while a
- * pass of light crosses it, fades away, and the next one builds in its
- * place. See AssemblingCanvas for the assembly.
+ * One looping clip cut from five paintings: a push-in on the graphite
+ * suit portrait, a drift across the ankara patchwork, a macro pass over
+ * mark-making, a tilt up the saxophone figure, and a pull-back off the
+ * dancer. Four are real camera moves over the actual scans; the last is
+ * generated, and only because it is an abstract.
  *
- * Three problems this component exists to solve:
+ * The rules this player follows, and why:
  *
- * 1. THE PAINTINGS ARE DIFFERENT SHAPES. Ratios here run from 0.766 to
- *    0.865. If the frame resized per painting, the title below it on a
- *    phone would jump every seven seconds. So the frame is FIXED at the
- *    opening work's ratio and each painting is fitted inside it —
- *    object-contain logic, done in JS because the shards are background
- *    images and cannot use object-fit.
+ * • The POSTER is the load-bearing part. It is a real frame of the film
+ *   and shows instantly. It is also exactly what iOS Low Power Mode
+ *   users see, because that mode refuses autoplay outright — so it has
+ *   to read as a deliberate still, never as a loading state.
  *
- * 2. IT SHOULD NOT RUN FOREVER IN THE BACKGROUND. The rotation pauses
- *    when the hero scrolls out of view and when the tab is hidden.
- *    Nobody needs their battery spent animating a section they left.
+ * • muted + playsInline + autoPlay is the only combination browsers
+ *   allow to start on its own. The clip is silent at the file level —
+ *   there is no audio track at all, which also keeps it smaller.
  *
- * 3. REDUCED MOTION MEANS REDUCED MOTION. Not a slower carousel — no
- *    carousel. Those visitors get one still painting.
+ * • The SOURCE IS CHOSEN ON THE CLIENT: 1080p (3.2MB) on wide screens,
+ *   720p (1.4MB) on phones. It is set in an effect rather than at
+ *   render so the server and client agree on the first paint.
+ *
+ * • It PAUSES off-screen and on hidden tabs. A looping video running
+ *   forever behind a section the visitor has left is a battery cost,
+ *   and much of this audience is on a phone.
+ *
+ * • prefers-reduced-motion gets the poster and no video element at all.
  */
-
-/** Held on screen after the assembly and light sweep have finished. */
-const HOLD = 1.6;
-const FADE_OUT = 0.9;
-
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
-  const inView = useInView(ref, { amount: 0.35 });
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const inView = useInView(ref, { amount: 0.2 });
+
   const reduced = useMediaQuery("(prefers-reduced-motion: reduce)");
+  const wide = useMediaQuery("(min-width: 768px)");
+
+  const hydrated = useHydrated();
+
+  /* Held back until the client has measured the viewport — see
+     useHydrated. 1080p is 3.2MB, 720p is 1.4MB. */
+  const src =
+    !hydrated || reduced
+      ? null
+      : wide
+        ? "/film/hero-1080.mp4"
+        : "/film/hero-720.mp4";
 
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
   });
-
-  /* Leaving: the room recedes rather than sliding away. */
-  const plateScale = useTransform(scrollYProgress, [0, 1], [1, 0.9]);
-  const plateOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
-  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "80%"]);
+  const filmScale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
+  const filmOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
+  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "60%"]);
   const textOpacity = useTransform(scrollYProgress, [0, 0.45], [1, 0]);
 
-  /* The opening work leads; the rest follow in catalogue order. */
-  const reel = useMemo(
-    () => [heroWork, ...works.filter((w) => w.slug !== heroWork.slug)],
-    [],
-  );
-
-  const [index, setIndex] = useState(0);
-  const [tabVisible, setTabVisible] = useState(true);
-
+  /* Play only while it is actually being watched. */
   useEffect(() => {
-    const onVisibility = () => setTabVisible(!document.hidden);
-    document.addEventListener("visibilitychange", onVisibility);
-    return () => document.removeEventListener("visibilitychange", onVisibility);
-  }, []);
+    const video = videoRef.current;
+    if (!video || !src) return;
 
-  const rotating = inView && tabVisible && !reduced && reel.length > 1;
+    const sync = () => {
+      const shouldPlay = inView && !document.hidden;
+      if (shouldPlay) void video.play().catch(() => {});
+      else video.pause();
+    };
 
-  useEffect(() => {
-    if (!rotating) return;
-    const id = setTimeout(
-      () => setIndex((i) => (i + 1) % reel.length),
-      (PERFORMANCE + HOLD) * 1000,
-    );
-    return () => clearTimeout(id);
-  }, [index, rotating, reel.length]);
-
-  const current = reel[index];
-  const next = reel[(index + 1) % reel.length];
-
-  /* The frame never changes shape; the paintings fit inside it. */
-  const frameRatio = heroWork.width / heroWork.height;
-  const fits = (w: typeof current) =>
-    w.width / w.height >= frameRatio
-      ? { width: "100%", height: "auto" }
-      : { height: "100%", width: "auto" };
+    sync();
+    document.addEventListener("visibilitychange", sync);
+    return () => document.removeEventListener("visibilitychange", sync);
+  }, [inView, src]);
 
   return (
     <section
       ref={ref}
-      className="relative flex h-[100svh] w-full flex-col overflow-hidden bg-void md:block"
+      className="relative flex min-h-[100svh] w-full flex-col overflow-hidden bg-void md:block"
       aria-label="Introduction"
     >
-      <div className="spotlight absolute inset-0" />
-
-      {/* The canvas ------------------------------------------------ */}
+      {/* The film ------------------------------------------------- */}
       <motion.div
-        style={{ scale: plateScale, opacity: plateOpacity }}
-        className="relative z-10 flex min-h-0 flex-1 items-center justify-center px-6 pt-16 pb-4 md:absolute md:inset-0 md:h-full md:px-6 md:pt-0 md:pb-0 md:pl-[40vw]"
+        style={{ scale: filmScale, opacity: filmOpacity }}
+        /* On phones the film takes all the height left above the title
+           rather than sitting as a 16:9 band with dead space beneath —
+           object-cover crops the widescreen frame to a tall window. */
+        className="relative w-full min-h-0 flex-1 md:absolute md:inset-0 md:h-full md:flex-none"
       >
-        {/* The frame: fixed size, so nothing around it ever moves. */}
-        <motion.div
-          style={{ aspectRatio: `${heroWork.width} / ${heroWork.height}` }}
-          className="flex w-[80vw] max-h-full max-w-full items-center justify-center md:h-[76svh] md:w-auto"
-          /* A very slow push-in, running underneath the whole reel. */
-          initial={{ scale: 1.03 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 40, ease: "linear" }}
-        >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={current.slug}
-              style={{
-                aspectRatio: `${current.width} / ${current.height}`,
-                ...fits(current),
-              }}
-              exit={{ opacity: 0, scale: 0.985 }}
-              transition={{ duration: FADE_OUT, ease: "easeInOut" }}
-            >
-              <AssemblingCanvas work={current} />
-            </motion.div>
-          </AnimatePresence>
-        </motion.div>
-      </motion.div>
+        {reduced ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src="/film/poster.jpg"
+            alt="Peterkin Arts — a portrait in graphite"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        ) : (
+          <video
+            ref={videoRef}
+            src={src ?? undefined}
+            poster="/film/poster.jpg"
+            muted
+            loop
+            playsInline
+            autoPlay
+            preload="auto"
+            aria-label="Five paintings by Peterkin Arts"
+            /* Absolute rather than h-full: as a flex child the
+               percentage height collapsed and the film letterboxed
+               into a band with dead space under it on phones. */
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        )}
 
-      {/* Quietly fetch the next painting so it never pops in.
-          Parked off-screen at 1px rather than `display:none`, which
-          some browsers treat as permission to skip the fetch. */}
-      {rotating && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={workSrc(next.slug)}
-          alt=""
-          aria-hidden
-          className="pointer-events-none absolute h-px w-px opacity-0"
+        {/* Grade: hold the edges down so the type stays readable and
+            the film sits in the same dark room as the rest of the site. */}
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse at 55% 45%, transparent 0%, rgba(7,6,5,0.30) 60%, rgba(7,6,5,0.80) 100%)",
+          }}
         />
-      )}
+        {/* The type sits over whichever painting happens to be on screen,
+            including the bright ankara patchwork, so the scrim has to be
+            strong enough to carry the label at its lowest contrast. */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-void via-void/80 to-transparent" />
+      </motion.div>
 
       {/* Title card ------------------------------------------------ */}
       <motion.div
         style={{ y: textY, opacity: textOpacity }}
-        className="relative z-20 shrink-0 px-6 pb-10 md:absolute md:inset-y-0 md:left-0 md:flex md:max-w-[38vw] md:flex-col md:justify-center md:px-14 md:pb-0"
+        className="relative z-20 shrink-0 px-6 pt-8 pb-12 md:absolute md:inset-x-0 md:bottom-0 md:px-14 md:pt-0 md:pb-20"
       >
         <motion.p
           className="label"
-          initial={{ opacity: 0, y: 14 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: PERFORMANCE * 0.5, duration: 1.1 }}
+          transition={{ delay: 0.8, duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
         >
           {artist.discipline} — {artist.based}
         </motion.p>
 
         <motion.h1
-          className="display mt-4 text-[clamp(2.8rem,8.5vw,7rem)]"
-          initial={{ opacity: 0, y: 36 }}
+          className="display mt-3 text-[clamp(2.8rem,9vw,7.5rem)]"
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{
-            delay: PERFORMANCE * 0.5 + 0.3,
-            duration: 1.6,
-            ease: [0.16, 1, 0.3, 1],
-          }}
+          transition={{ delay: 1.05, duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
         >
-          Peterkin
-          <span className="block text-brass italic">Arts</span>
+          Peterkin <span className="text-brass italic">Arts</span>
         </motion.h1>
 
         <motion.p
-          className="mt-5 max-w-sm font-display text-lg leading-snug text-ash italic md:text-xl"
+          className="mt-4 max-w-md font-display text-lg leading-snug text-ash italic md:text-xl"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: PERFORMANCE * 0.5 + 1.2, duration: 1.8 }}
+          transition={{ delay: 1.7, duration: 1.6 }}
         >
           {artist.tagline}
         </motion.p>
-
-        {/* The wall label — changes with the painting on show. */}
-        <div className="mt-7 h-8">
-          <AnimatePresence mode="wait">
-            <motion.p
-              key={current.slug}
-              className="label"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.7, delay: 0.4 }}
-            >
-              {current.title} · {current.year}
-            </motion.p>
-          </AnimatePresence>
-        </div>
-      </motion.div>
-
-      {/* Scroll cue ------------------------------------------------ */}
-      <motion.div
-        className="pointer-events-none absolute inset-x-0 bottom-4 z-20 flex justify-center"
-        style={{ opacity: textOpacity }}
-      >
-        <motion.div
-          className="h-10 w-px bg-gradient-to-b from-transparent via-ash to-transparent"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: [0, 0.25, 1, 0.25] }}
-          transition={{
-            duration: 3.4,
-            delay: PERFORMANCE * 0.5 + 1.6,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
       </motion.div>
     </section>
   );
