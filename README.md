@@ -25,6 +25,37 @@ npm run dev          # http://localhost:3000
 
 ---
 
+## The hero film
+
+The site opens on one looping clip cut from five paintings — a push-in on
+the graphite suit portrait, a drift across the ankara patchwork, a macro
+pass over mark-making, a tilt up the saxophone figure, and a pull-back off
+the dancer. About 21 seconds, silent, looping.
+
+Four of the five shots are **real camera moves over the actual scans** —
+a virtual camera pushing in and drifting across a still image, so every
+pixel on screen is the artist's own paint. Only the closing shot is
+AI-generated, and only because it is an abstract: generative video
+re-draws every frame, which reads as motion on a gestural painting and as
+a smeared face on hyperrealist graphite.
+
+To rebuild it after changing the paintings:
+
+```bash
+node scripts/build-film.mjs     # needs ffmpeg on PATH
+```
+
+That writes `public/film/hero-1080.mp4` (3.2MB), `hero-720.mp4` (1.4MB)
+and `poster.jpg`. The player picks the encode by viewport width, shows the
+poster until playback starts, pauses off-screen and on hidden tabs, and
+serves the poster alone to `prefers-reduced-motion`.
+
+The generated shot is not reproducible from the script — it came from a
+video model. `/tmp/film/ai-dance.mp4` is its source; keep a copy if you
+want to re-cut without regenerating.
+
+---
+
 ## ⚠ First: add the artwork files
 
 **This repository contains the source code but not the images.** They were
@@ -46,6 +77,7 @@ That archive contains:
 | Path | What |
 | --- | --- |
 | `public/works/originals/*.jpg` | The master photographs — the real source of truth |
+| `public/film/*` | The hero film and its poster frame |
 | `public/works/*.jpg` | The optimised versions the site serves |
 | `public/peterkin-*.png` | Logo lockup and JP monogram |
 | `src/app/icon.png` | Favicon |
@@ -81,8 +113,8 @@ You should never need to touch a component to add work.
 3. **Paste that entry** into `src/content/works.ts` and fill in the title, year,
    medium and dimensions.
 
-Set `featured: true` on three to five works to include them in the pinned
-cinematic sequence. Everything else appears in the catalogue grid.
+Every work appears in the Works grid. Set `hero: true` on exactly one piece
+to choose which still backs the hero when video can't play.
 
 ### Where the content lives
 
@@ -113,15 +145,14 @@ They are marked with `⚠` in the source. Replace them:
 
 ### Photography notes
 
-- `hand-to-temple.jpg` carries a visible **"I.G Peterkin101" watermark** burnt
-  into the scan. An unwatermarked copy would look considerably better at the
-  size this site displays it.
-- Three works are **under 1200px on the long edge** (`green-ground`,
-  `the-child`, `the-fila`). They hold up in the catalogue grid but will soften
-  in the full-screen lightbox. Re-shoot them if they matter.
-- One supplied piece — a framed portrait photographed in the workshop — was
-  **left out**. The artwork occupied only ~344×478px of a cluttered, angled
-  snapshot with glass glare. It's worth re-photographing flat and adding.
+- Two works are **too small to feature**: `the-hat` (610×1155, cropped out of
+  a wide room photograph) and `the-turban` (610×820). They hold up in the grid
+  but soften badly in the lightbox, and neither can carry a camera move in the
+  film. Re-shoot them if they matter.
+- `two-faces` arrived **photographed sideways on an easel** in a cluttered
+  studio; it is rotated upright and cropped in `prepare-source.mjs`.
+- Most of the rest are framed presentation mockups sat on white walls, cropped
+  down to the artwork so a white surround doesn't read as a bug on a dark page.
 
 **How to photograph work for this site:** flat to the wall, camera square on,
 indirect daylight, no flash, fill the frame with the piece, and send the
@@ -139,29 +170,27 @@ src/
     globals.css          Design tokens — the whole palette lives here
   components/
     SmoothScroll.tsx     Lenis — the dolly track everything else rides on
-    Hero.tsx             Cold open: one work, lights coming up
-    Statement.tsx        Voice-over
-    FeaturedSequence.tsx Pinned works with captions travelling past
-    GalleryWall.tsx      Lateral tracking shot driven by vertical scroll
-    Catalogue.tsx        Filterable grid of everything
-    Process.tsx          Studio note over a parallaxing detail
+    Hero.tsx             The film, and the title card over it
+    Works.tsx            Every piece, one grid, click to open
+    About.tsx            Statement and studio note
     Contact.tsx          End card, enquiries, rights
     Lightbox.tsx         Full screen + zoom into the surface
     Nav.tsx              Chrome, which arrives late and quietly
   content/               ← the only files you normally edit
   lib/
-    hooks.ts             useCinematic() — the motion budget gate
+    hooks.ts             Media queries and the hydration gate
     lenis.ts             Shared scroll handle so overlays can freeze the page
 scripts/
   images.mjs             The artwork pipeline
-  prepare-source.mjs     One-off crops of the framed mockups (kept for reference)
-  shots.mjs              Headless screenshots of every section
+  prepare-source.mjs     Crops each photograph down to the artwork
+  build-film.mjs         Cuts the hero film
+  shots.mjs / reel.mjs   Headless screenshots for visual checking
 ```
 
 ### On the motion
 
-Every pinned or scroll-driven effect is gated behind `useCinematic()`, which
-returns `false` below 768px **and** for anyone with `prefers-reduced-motion`
+The hero film is gated: it pauses off-screen and on hidden tabs, and anyone
+with `prefers-reduced-motion`
 set. Those visitors get the same content as ordinary stacked sections and
 native swipe strips — not a broken desktop layout. This is a supported way to
 view the site, not a fallback nobody tested.

@@ -7,11 +7,10 @@
  *   2. Run  `npm run images`  (optimises + measures it, prints an entry)
  *   3. Paste the printed entry below and fill in the details
  *
- * ⚠  TITLES, YEARS AND MEDIA BELOW ARE WORKING PLACEHOLDERS.
- *    They were inferred from the photographs, their signatures and
- *    their file dates — not supplied by the artist. Peterkin should
- *    correct every one of them. Nothing here is guesswork the viewer
- *    can see through, but it is still guesswork.
+ * ⚠  TITLES, YEARS AND MEDIA ARE WORKING PLACEHOLDERS.
+ *    Years are inferred from signatures on the work and from file
+ *    dates; media from how the surface reads in the photograph.
+ *    Peterkin should correct every one of them.
  */
 
 export type Work = {
@@ -22,8 +21,6 @@ export type Work = {
   medium: string;
   /** Physical size, e.g. "120 × 90 cm". Leave empty until confirmed. */
   dimensions?: string;
-  /** Grouping — powers the catalogue filters. */
-  series?: string;
   /** One or two sentences in the artist's own voice. */
   note?: string;
   /** Pixel dimensions of the photograph. Set by `npm run images`. */
@@ -31,86 +28,114 @@ export type Work = {
   height: number;
   /** Average colour — the placeholder shown while loading. */
   tint: string;
-  /** Show in the featured cinematic sequence. Aim for 3–5. */
-  featured?: boolean;
+  /** The poster frame behind the hero film. Exactly one work. */
+  hero?: boolean;
   status?: "available" | "sold" | "private collection";
 };
 
 export const works: Work[] = [
   {
-    slug: "the-cap",
-    title: "Man in a Flat Cap",
-    year: 2025,
+    slug: "the-suit",
+    title: "Man in a Dark Suit",
+    year: 2023,
     medium: "Graphite and charcoal on paper",
-    series: "Portraits",
-    note: "Almost all of the drawing is in the beard and the reflections in the lenses — everything else is held back so those two can do the work.",
-    width: 1588,
-    height: 1836,
+    width: 1665,
+    height: 2400,
+    tint: "#282828",
+    hero: true,
+  },
+  {
+    slug: "the-lapel-pin",
+    title: "The Lapel Pin",
+    year: 2023,
+    medium: "Graphite and charcoal on paper",
+    width: 1878,
+    height: 2400,
     tint: "#c8c8c8",
-    featured: true,
   },
   {
-    slug: "hand-to-temple",
-    title: "Hand to Temple",
-    year: 2021,
+    slug: "braids",
+    title: "Braids",
+    year: 2022,
     medium: "Graphite and charcoal on paper",
-    series: "Portraits",
-    note: "A study in restraint: the print of the blouse is the only place the drawing is allowed to be loud.",
-    width: 1424,
-    height: 1860,
-    tint: "#b8a8a8",
-    featured: true,
+    width: 1751,
+    height: 2400,
+    tint: "#281818",
   },
   {
-    slug: "green-ground",
-    title: "Green Ground",
+    slug: "the-turban",
+    title: "White Turban",
+    year: 2020,
+    medium: "Graphite and charcoal on paper",
+    width: 610,
+    height: 820,
+    tint: "#686868",
+  },
+  {
+    slug: "ankara",
+    title: "Ankara",
     year: 2025,
     medium: "Acrylic on canvas",
-    series: "Colour work",
-    note: "A face assembled out of planes and arcs — the same subject as the portraits, taken apart and rebuilt in colour.",
-    width: 962,
-    height: 1132,
-    tint: "#a8a838",
-    featured: true,
+    width: 2400,
+    height: 2003,
+    tint: "#081828",
   },
   {
-    slug: "the-child",
-    title: "The Child",
-    year: 2019,
-    medium: "Graphite and charcoal on paper",
-    series: "Portraits",
-    width: 931,
-    height: 1080,
-    tint: "#3a3a3a",
+    slug: "saxophone",
+    title: "Saxophone",
+    year: 2025,
+    medium: "Acrylic on canvas",
+    width: 1203,
+    height: 2400,
+    tint: "#081828",
   },
   {
-    slug: "the-fila",
-    title: "Elder in Fila",
-    year: 2022,
-    medium: "Pastel on paper",
-    series: "Colour work",
-    width: 712,
-    height: 841,
-    tint: "#685848",
+    slug: "the-dance",
+    title: "The Dance",
+    year: 2025,
+    medium: "Oil on canvas",
+    width: 1653,
+    height: 2400,
+    tint: "#384858",
+  },
+  {
+    slug: "the-cello",
+    title: "Strings",
+    year: 2025,
+    medium: "Oil on canvas",
+    width: 1560,
+    height: 2330,
+    tint: "#d8c898",
+  },
+  {
+    slug: "two-faces",
+    title: "Two Faces",
+    year: 2024,
+    medium: "Acrylic on canvas",
+    width: 1532,
+    height: 2400,
+    tint: "#989898",
+  },
+  {
+    slug: "the-hat",
+    title: "The Wide Hat",
+    year: 2025,
+    medium: "Acrylic on canvas",
+    width: 610,
+    height: 1155,
+    tint: "#b8a898",
   },
 ];
 
 /* ---------------------------------------------------------------- */
 
-export const featuredWorks = works.filter((w) => w.featured);
-
-export const series = Array.from(
-  new Set(works.map((w) => w.series).filter(Boolean)),
-) as string[];
-
-export const years = Array.from(new Set(works.map((w) => w.year))).sort(
-  (a, b) => b - a,
-);
+/** The poster frame behind the hero film. */
+export const heroWork = works.find((w) => w.hero) ?? works[0];
 
 export const workSrc = (slug: string) => `/works/${slug}.jpg`;
 
 /**
- * Builds the "2025 · Graphite on paper · 90 × 60 cm" line, skipping any
+ * Builds the "2025 · Acrylic on canvas · 90 × 60 cm" line, skipping any
  * field that hasn't been filled in yet — so an unconfirmed dimension
  * never shows up as a dangling separator.
  */
