@@ -22,8 +22,6 @@ export type Work = {
   medium: string;
   /** Physical size, e.g. "120 × 90 cm". Leave empty until confirmed. */
   dimensions?: string;
-  /** Grouping — powers the catalogue filters. */
-  series?: string;
   /** One or two sentences in the artist's own voice. */
   note?: string;
   /** Pixel dimensions of the photograph. Set by `npm run images`. */
@@ -31,8 +29,6 @@ export type Work = {
   height: number;
   /** Average colour — the placeholder shown while loading. */
   tint: string;
-  /** Show in the featured cinematic sequence. Aim for 3–5. */
-  featured?: boolean;
   /** The opening shot. Exactly one work should carry this. */
   hero?: boolean;
   status?: "available" | "sold" | "private collection";
@@ -44,36 +40,30 @@ export const works: Work[] = [
     title: "Man in a Flat Cap",
     year: 2025,
     medium: "Graphite and charcoal on paper",
-    series: "Portraits",
     note: "Almost all of the drawing is in the beard and the reflections in the lenses — everything else is held back so those two can do the work.",
     width: 1588,
     height: 1836,
     tint: "#c8c8c8",
-    featured: true,
   },
   {
     slug: "hand-to-temple",
     title: "Hand to Temple",
     year: 2021,
     medium: "Graphite and charcoal on paper",
-    series: "Portraits",
     note: "A study in restraint: the print of the blouse is the only place the drawing is allowed to be loud.",
     width: 1424,
     height: 1860,
     tint: "#b8a8a8",
-    featured: true,
   },
   {
     slug: "green-ground",
     title: "Green Ground",
     year: 2025,
     medium: "Acrylic on canvas",
-    series: "Colour work",
     note: "A face assembled out of planes and arcs — the same subject as the portraits, taken apart and rebuilt in colour.",
     width: 962,
     height: 1132,
     tint: "#a8a838",
-    featured: true,
     hero: true,
   },
   {
@@ -81,7 +71,6 @@ export const works: Work[] = [
     title: "The Child",
     year: 2019,
     medium: "Graphite and charcoal on paper",
-    series: "Portraits",
     width: 931,
     height: 1080,
     tint: "#3a3a3a",
@@ -91,7 +80,6 @@ export const works: Work[] = [
     title: "Elder in Fila",
     year: 2022,
     medium: "Pastel on paper",
-    series: "Colour work",
     width: 712,
     height: 841,
     tint: "#685848",
@@ -100,18 +88,8 @@ export const works: Work[] = [
 
 /* ---------------------------------------------------------------- */
 
-export const featuredWorks = works.filter((w) => w.featured);
-
 /** The opening shot. Falls back to the first work if none is flagged. */
 export const heroWork = works.find((w) => w.hero) ?? works[0];
-
-export const series = Array.from(
-  new Set(works.map((w) => w.series).filter(Boolean)),
-) as string[];
-
-export const years = Array.from(new Set(works.map((w) => w.year))).sort(
-  (a, b) => b - a,
-);
 
 export const workSrc = (slug: string) => `/works/${slug}.jpg`;
 

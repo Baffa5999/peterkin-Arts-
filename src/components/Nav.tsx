@@ -7,8 +7,7 @@ import { artist } from "@/content/artist";
 
 const items = [
   { label: "Works", href: "#works" },
-  { label: "Catalogue", href: "#catalogue" },
-  { label: "Studio", href: "#process" },
+  { label: "About", href: "#about" },
   { label: "Contact", href: "#contact" },
 ];
 
