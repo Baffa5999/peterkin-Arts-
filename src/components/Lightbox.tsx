@@ -90,6 +90,11 @@ export function LightboxProvider({ children }: { children: React.ReactNode }) {
                 <p className="label mt-1.5">
                   {work.year} · {work.medium}
                 </p>
+                {work.caption && (
+                  <p className="mt-2 font-display text-base text-ash italic md:text-lg">
+                    {work.caption}
+                  </p>
+                )}
               </div>
               <button
                 onClick={close}
@@ -150,9 +155,17 @@ export function LightboxProvider({ children }: { children: React.ReactNode }) {
                 ← Prev
               </button>
 
-              <p className="label hidden text-center md:block">
-                {zoomed ? "Click to fit" : "Click to inspect the surface"}
-              </p>
+              {/* Word of the Artist, where there is room for it. Falls
+                  back to the zoom hint on narrow screens. */}
+              {work.artistWord ? (
+                <p className="hidden max-w-2xl text-center font-display text-sm leading-snug text-ash italic lg:block">
+                  &ldquo;{work.artistWord}&rdquo;
+                </p>
+              ) : (
+                <p className="label hidden text-center md:block">
+                  {zoomed ? "Click to fit" : "Click to inspect the surface"}
+                </p>
+              )}
 
               <p className="label tabular-nums">
                 {String((index ?? 0) + 1).padStart(2, "0")} /{" "}
