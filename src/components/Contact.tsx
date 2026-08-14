@@ -33,14 +33,19 @@ export default function Contact() {
           {enquiries}
         </a>
 
-        {artist.contact.phone && (
-          <a
-            href={`tel:${artist.contact.phone.replace(/\s/g, "")}`}
-            className="label mt-6 inline-block transition-colors hover:text-paper"
-          >
-            {artist.contact.phone}
-          </a>
-        )}
+        <div className="mt-7 flex flex-col gap-2.5">
+          {artist.contact.phone && (
+            <a
+              /* Strip spaces but keep the leading + so the tel: link
+                 dials correctly from outside Nigeria. */
+              href={`tel:${artist.contact.phone.replace(/[^\d+]/g, "")}`}
+              className="label w-fit transition-colors hover:text-paper"
+            >
+              {artist.contact.phone}
+            </a>
+          )}
+          <p className="label">{artist.based}</p>
+        </div>
       </motion.div>
 
       <div className="mt-24 flex flex-col-reverse gap-8 border-t border-rule pt-8 md:flex-row md:items-center md:justify-between">
