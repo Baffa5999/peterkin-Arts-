@@ -32,7 +32,10 @@ import { execFileSync } from "node:child_process";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 
-const WORKS = path.join(process.cwd(), "public", "works");
+/* The PLATES — the paintings without their frames. The grid shows the
+   framed photographs, but a white mockup hung on this film's dark
+   gallery wall would read as a mistake, so the film uses bare plates. */
+const WORKS = path.join(process.cwd(), "public", "works", "plates");
 const TMP = "/tmp/film";
 const OUT = path.join(process.cwd(), "public", "film");
 const AI_SOURCE = path.join(TMP, "ai-dance.mp4");

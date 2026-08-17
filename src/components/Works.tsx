@@ -49,7 +49,10 @@ export default function Works() {
                 height={work.height}
                 quality={82}
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                className="h-auto w-full brightness-[0.84] transition-all duration-[900ms] ease-out object-contain group-hover:brightness-105"
+                /* No brightness filter: these are framed photographs with
+                   white mounts, and dimming a white mount reads as dirty
+                   paper rather than as atmosphere. */
+                className="h-auto w-full transition-transform duration-[900ms] ease-out group-hover:scale-[1.03]"
                 style={{ backgroundColor: work.tint }}
               />
             </div>
