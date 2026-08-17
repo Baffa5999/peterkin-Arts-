@@ -82,8 +82,8 @@ export const works: Work[] = [
     title: "Emir",
     year: 2020,
     medium: "Graphite and charcoal on paper",
-    width: 610,
-    height: 820,
+    width: 600,
+    height: 793,
     tint: "#686868",
     caption: "Soft fabric, hard attention.",
     artistWord:
@@ -95,7 +95,7 @@ export const works: Work[] = [
     year: 2025,
     medium: "Acrylic on canvas",
     width: 2400,
-    height: 2003,
+    height: 1910,
     tint: "#081828",
     caption: "Pattern and face speaking at the same volume.",
     artistWord:
@@ -118,8 +118,8 @@ export const works: Work[] = [
     title: "The Dance",
     year: 2025,
     medium: "Oil on canvas",
-    width: 1653,
-    height: 2400,
+    width: 1646,
+    height: 2371,
     tint: "#384858",
     caption: "Movement frozen just long enough to see it.",
     artistWord:
@@ -130,8 +130,8 @@ export const works: Work[] = [
     title: "Anatomy of Music",
     year: 2025,
     medium: "Oil on canvas",
-    width: 1560,
-    height: 2330,
+    width: 1529,
+    height: 2232,
     tint: "#d8c898",
     caption: "Tension held in colour.",
     artistWord:
@@ -154,8 +154,8 @@ export const works: Work[] = [
     title: "The Wide Hat",
     year: 2025,
     medium: "Acrylic on canvas",
-    width: 610,
-    height: 1155,
+    width: 591,
+    height: 1120,
     tint: "#b8a898",
     caption: "Shadow as another kind of portrait.",
     artistWord:

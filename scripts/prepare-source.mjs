@@ -49,7 +49,11 @@ const jobs = [
   {
     from: "cmsrcy6an0cws07ad35uvidir_5fd38a90-4ceb-11f0-a716-273fdbe713d8.jpg",
     to: "ankara.jpg",
-    crop: { left: 655, top: 915, width: 2540, height: 2120 },
+    /* Found by scanning for colour saturation rather than by eye: the
+       frame is grey, the painting is not. The hand-set box kept a strip
+       of frame on the left and top while cutting ~100px of painting off
+       the right, which is what showed on the live site. */
+    crop: { left: 688, top: 956, width: 2624, height: 2088 },
   },
   {
     from: "cmsrcy6am0e9s06ad8ts7lrnn_7696f8c0-3e40-11f0-8970-398978c4c316.jpg",
