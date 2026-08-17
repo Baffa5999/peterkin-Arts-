@@ -53,3 +53,22 @@ export const artist: Artist = {
 
   copyrightName: "Peterkin Arts",
 };
+
+/**
+ * WhatsApp deep link, derived from the phone number above so there is
+ * only ever one number to keep correct.
+ *
+ * wa.me wants the number in full international form with NO plus sign,
+ * no spaces and no dashes — "+234 810 011 2879" has to become
+ * "2348100112879" or the link opens WhatsApp on an empty chat.
+ *
+ * The prefilled message is a courtesy: it means the visitor does not
+ * have to open with "hi" and explain where they found him.
+ */
+export const whatsappUrl = (() => {
+  const digits = artist.contact.phone.replace(/\D/g, "");
+  const text = encodeURIComponent(
+    `Hello Peterkin, I found your portfolio online and would like to talk about your work.`,
+  );
+  return `https://wa.me/${digits}?text=${text}`;
+})();

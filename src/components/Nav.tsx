@@ -8,7 +8,7 @@ import {
   useScroll,
 } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
-import { artist } from "@/content/artist";
+import { artist, whatsappUrl } from "@/content/artist";
 import { freezeScroll, unfreezeScroll } from "@/lib/lenis";
 
 const items = [
@@ -175,6 +175,14 @@ export default function Nav() {
                     {artist.contact.phone}
                   </a>
                 )}
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="label mt-1 w-fit border-b border-rule pb-1 transition-colors hover:border-brass hover:text-brass"
+                >
+                  Message on WhatsApp
+                </a>
               </div>
 
               <div className="flex flex-col gap-2 md:items-end">
