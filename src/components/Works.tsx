@@ -61,6 +61,26 @@ export default function Works() {
             <p className="label mt-1 normal-case tracking-normal">
               {workMeta(work)}
             </p>
+
+            {work.caption && (
+              <p className="mt-3 font-display text-lg leading-snug text-paper">
+                {work.caption}
+              </p>
+            )}
+
+            {work.artistWord && (
+              /* Word of the Artist. Set as a quotation with a rule down
+                 the left so it reads as the artist speaking rather than
+                 as more gallery copy. */
+              <figure className="mt-3 border-l border-rule pl-4">
+                <blockquote className="font-display text-base leading-relaxed text-ash italic">
+                  &ldquo;{work.artistWord}&rdquo;
+                </blockquote>
+                <figcaption className="label mt-2">
+                  Word of the Artist
+                </figcaption>
+              </figure>
+            )}
           </motion.button>
         ))}
       </div>

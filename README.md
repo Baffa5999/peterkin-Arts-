@@ -45,10 +45,27 @@ To rebuild it after changing the paintings:
 node scripts/build-film.mjs     # needs ffmpeg on PATH
 ```
 
-That writes `public/film/hero-1080.mp4` (3.2MB), `hero-720.mp4` (1.4MB)
-and `poster.jpg`. The player picks the encode by viewport width, shows the
-poster until playback starts, pauses off-screen and on hidden tabs, and
-serves the poster alone to `prefers-reduced-motion`.
+That writes **two cuts of the same film** plus a poster for each:
+
+| File | Shape | Size | Used on |
+| --- | --- | --- | --- |
+| `hero-1080.mp4` | 16:9 | ~1.9MB | 1024px and wider |
+| `hero-portrait.mp4` | 4:5 | ~2.1MB | phones and portrait tablets |
+
+Two shapes because one widescreen cut lost **64% of its width** to
+`object-cover` in a phone's tall hero — which is why paintings appeared with
+their sides missing. The player picks by viewport, uses `object-contain` so
+nothing is cropped by CSS either, and the letterbox is invisible because the
+film's wall is the same near-black as the page.
+
+`safeZoom()` in the build script computes the tightest framing that still
+contains the whole canvas, from each painting's real dimensions. Every push-in
+stops there, so **no work is ever cut off** — the margin is arithmetic, not
+eyeballed. If you replace a painting the framing adapts on the next build.
+
+The poster shows until playback starts, and is what iOS Low Power Mode users
+see since that refuses autoplay outright. Playback pauses off-screen and on
+hidden tabs; `prefers-reduced-motion` gets the poster alone.
 
 The generated shot is not reproducible from the script — it came from a
 video model. `/tmp/film/ai-dance.mp4` is its source; keep a copy if you
@@ -77,7 +94,7 @@ That archive contains:
 | Path | What |
 | --- | --- |
 | `public/works/originals/*.jpg` | The master photographs — the real source of truth |
-| `public/film/*` | The hero film and its poster frame |
+| `public/film/*` | Both cuts of the hero film and their posters |
 | `public/works/*.jpg` | The optimised versions the site serves |
 | `public/peterkin-*.png` | Logo lockup and JP monogram |
 | `src/app/icon.png` | Favicon |
@@ -131,17 +148,18 @@ The site is structurally finished, but some of the *words* are still
 placeholders written to the correct length so the layout could be judged.
 They are marked with `⚠` in the source. Replace them:
 
-- [ ] **The statement and studio paragraphs** in `artist.ts` — these are not
-      Peterkin's words. A portfolio in someone else's voice is worse than no
-      statement at all.
-- [ ] **Every title, year and medium** in `works.ts` — inferred from the
-      photographs, their signatures and their file dates, not supplied by the
-      artist.
+- [ ] **The statement and studio paragraphs** in `artist.ts` — these are the
+      last of the placeholder writing, and they are not Peterkin's words. A
+      portfolio in someone else's voice is worse than no statement at all.
 - [ ] **Dimensions** — not supplied for any work. They are omitted cleanly
       wherever they're missing, so the site is correct as-is, but a collector
       will want them.
-- [ ] **The contact email** — currently `hello@peterkinarts.com`, a guess.
-- [ ] **`based`** — currently "Nigeria", inferred from the subjects' dress.
+
+Already done, do not re-guess these:
+
+- [x] Titles, years, media, captions and "Word of the Artist" lines — supplied
+      by the artist 14 Aug 2026.
+- [x] Contact — real email, phone, WhatsApp and FCT Abuja.
 
 ### Photography notes
 

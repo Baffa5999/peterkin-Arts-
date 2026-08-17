@@ -8,8 +8,8 @@
  *    written to the right length so the layout could be judged. They
  *    are not Peterkin's words. Replace them before the site goes live
  *    — a portfolio in someone else's voice is worse than no statement.
+ *    Everything else here — name, location, contact, links — is real.
  *
- * ⚠  `based` and `contact.email` still need real values.
  */
 
 export type Artist = {
@@ -27,7 +27,7 @@ export type Artist = {
 export const artist: Artist = {
   name: "Peterkin Arts",
   discipline: "Portraits in graphite and colour",
-  based: "Nigeria",
+  based: "FCT Abuja, Nigeria",
 
   /* The opening shot is now the cubist canvas, so this line has to
      carry both practices — a graphite-only tagline read as a caption
@@ -44,8 +44,8 @@ export const artist: Artist = {
   ],
 
   contact: {
-    email: "hello@peterkinarts.com",
-    phone: "",
+    email: "Peterkinpeter360@gmail.com",
+    phone: "+234 810 011 2879",
     enquiries: "",
   },
 
@@ -53,3 +53,22 @@ export const artist: Artist = {
 
   copyrightName: "Peterkin Arts",
 };
+
+/**
+ * WhatsApp deep link, derived from the phone number above so there is
+ * only ever one number to keep correct.
+ *
+ * wa.me wants the number in full international form with NO plus sign,
+ * no spaces and no dashes — "+234 810 011 2879" has to become
+ * "2348100112879" or the link opens WhatsApp on an empty chat.
+ *
+ * The prefilled message is a courtesy: it means the visitor does not
+ * have to open with "hi" and explain where they found him.
+ */
+export const whatsappUrl = (() => {
+  const digits = artist.contact.phone.replace(/\D/g, "");
+  const text = encodeURIComponent(
+    `Hello Peterkin, I found your portfolio online and would like to talk about your work.`,
+  );
+  return `https://wa.me/${digits}?text=${text}`;
+})();

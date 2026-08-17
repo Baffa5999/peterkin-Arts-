@@ -7,10 +7,14 @@
  *   2. Run  `npm run images`  (optimises + measures it, prints an entry)
  *   3. Paste the printed entry below and fill in the details
  *
- * ⚠  TITLES, YEARS AND MEDIA ARE WORKING PLACEHOLDERS.
- *    Years are inferred from signatures on the work and from file
- *    dates; media from how the surface reads in the photograph.
- *    Peterkin should correct every one of them.
+ * Titles, years, media, captions and the "Word of the Artist" lines
+ * were all supplied by the artist on 14 Aug 2026. They are no longer
+ * inferred — do not overwrite them with guesses.
+ *
+ * The `slug` is the image filename and is NOT the title: "ankara" and
+ * "the-turban" were renamed to "Mosaic of Soul" and "Emir" on 17 Aug.
+ * Leaving the slugs alone keeps the photographs, the film build and the
+ * catalogue in step; only the displayed title changed.
  */
 
 export type Work = {
@@ -21,8 +25,10 @@ export type Work = {
   medium: string;
   /** Physical size, e.g. "120 × 90 cm". Leave empty until confirmed. */
   dimensions?: string;
-  /** One or two sentences in the artist's own voice. */
-  note?: string;
+  /** Shown directly under the image in the Works grid. */
+  caption?: string;
+  /** "Word of the Artist" — shown after the caption and in the lightbox. */
+  artistWord?: string;
   /** Pixel dimensions of the photograph. Set by `npm run images`. */
   width: number;
   height: number;
@@ -43,6 +49,9 @@ export const works: Work[] = [
     height: 2400,
     tint: "#282828",
     hero: true,
+    caption: "Quiet confidence held in a single look.",
+    artistWord:
+      "I start with the darkest places and work outward until the face arrives on its own.",
   },
   {
     slug: "the-lapel-pin",
@@ -52,6 +61,9 @@ export const works: Work[] = [
     width: 1878,
     height: 2400,
     tint: "#c8c8c8",
+    caption: "A small detail that carries the whole presence.",
+    artistWord:
+      "Nothing is outlined. Edges are found by putting tone next to tone.",
   },
   {
     slug: "braids",
@@ -61,24 +73,33 @@ export const works: Work[] = [
     width: 1751,
     height: 2400,
     tint: "#281818",
+    caption: "Hair as architecture. Light caught in every strand.",
+    artistWord:
+      "A beard is not one thing. It is thousands of separate marks that decide to become a beard.",
   },
   {
     slug: "the-turban",
-    title: "White Turban",
+    title: "Emir",
     year: 2020,
     medium: "Graphite and charcoal on paper",
-    width: 610,
-    height: 820,
+    width: 600,
+    height: 793,
     tint: "#686868",
+    caption: "Soft fabric, hard attention.",
+    artistWord:
+      "I want the paper to disappear. Only the person should remain.",
   },
   {
     slug: "ankara",
-    title: "Ankara",
+    title: "Mosaic of Soul",
     year: 2025,
     medium: "Acrylic on canvas",
     width: 2400,
-    height: 2003,
+    height: 1910,
     tint: "#081828",
+    caption: "Pattern and face speaking at the same volume.",
+    artistWord:
+      "The colour work is not the opposite of the drawings. It is the same face approached from the other end.",
   },
   {
     slug: "saxophone",
@@ -88,24 +109,33 @@ export const works: Work[] = [
     width: 1203,
     height: 2400,
     tint: "#081828",
+    caption: "Sound made visible.",
+    artistWord:
+      "Every portrait is built in layers over days. Rushing it only makes it thinner.",
   },
   {
     slug: "the-dance",
     title: "The Dance",
     year: 2025,
     medium: "Oil on canvas",
-    width: 1653,
-    height: 2400,
+    width: 1646,
+    height: 2371,
     tint: "#384858",
+    caption: "Movement frozen just long enough to see it.",
+    artistWord:
+      "I start with the darkest places and work outward until the face arrives on its own.",
   },
   {
     slug: "the-cello",
-    title: "Strings",
+    title: "Anatomy of Music",
     year: 2025,
     medium: "Oil on canvas",
-    width: 1560,
-    height: 2330,
+    width: 1529,
+    height: 2232,
     tint: "#d8c898",
+    caption: "Tension held in colour.",
+    artistWord:
+      "Nothing is outlined. Edges are found by putting tone next to tone.",
   },
   {
     slug: "two-faces",
@@ -115,15 +145,21 @@ export const works: Work[] = [
     width: 1532,
     height: 2400,
     tint: "#989898",
+    caption: "One person, two ways of being seen.",
+    artistWord:
+      "The colour work is not the opposite of the drawings. It is the same face approached from the other end.",
   },
   {
     slug: "the-hat",
     title: "The Wide Hat",
     year: 2025,
     medium: "Acrylic on canvas",
-    width: 610,
-    height: 1155,
+    width: 591,
+    height: 1120,
     tint: "#b8a898",
+    caption: "Shadow as another kind of portrait.",
+    artistWord:
+      "I want the paper to disappear. Only the person should remain.",
   },
 ];
 
