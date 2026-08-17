@@ -133,7 +133,7 @@ export function LightboxProvider({ children }: { children: React.ReactNode }) {
                   style={
                     zoomed
                       ? { height: "160vh", maxWidth: "none" }
-                      : { maxHeight: "100%" }
+                      : { maxHeight: "100%", width: "auto" }
                   }
                   sizes="100vw"
                 />
