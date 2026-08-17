@@ -10,6 +10,11 @@
  * Titles, years, media, captions and the "Word of the Artist" lines
  * were all supplied by the artist on 14 Aug 2026. They are no longer
  * inferred — do not overwrite them with guesses.
+ *
+ * The `slug` is the image filename and is NOT the title: "ankara" and
+ * "the-turban" were renamed to "Mosaic of Soul" and "Emir" on 17 Aug.
+ * Leaving the slugs alone keeps the photographs, the film build and the
+ * catalogue in step; only the displayed title changed.
  */
 
 export type Work = {
@@ -74,7 +79,7 @@ export const works: Work[] = [
   },
   {
     slug: "the-turban",
-    title: "White Turban",
+    title: "Emir",
     year: 2020,
     medium: "Graphite and charcoal on paper",
     width: 610,
@@ -86,7 +91,7 @@ export const works: Work[] = [
   },
   {
     slug: "ankara",
-    title: "Ankara",
+    title: "Mosaic of Soul",
     year: 2025,
     medium: "Acrylic on canvas",
     width: 2400,
