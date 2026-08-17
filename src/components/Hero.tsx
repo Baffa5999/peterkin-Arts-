@@ -25,9 +25,14 @@ import { useHydrated, useMediaQuery } from "@/lib/hooks";
  *   allow to start on its own. The clip is silent at the file level —
  *   there is no audio track at all, which also keeps it smaller.
  *
- * • The SOURCE IS CHOSEN ON THE CLIENT: 1080p (3.2MB) on wide screens,
- *   720p (1.4MB) on phones. It is set in an effect rather than at
- *   render so the server and client agree on the first paint.
+ * • THE FILM IS CUT IN TWO SHAPES. 16:9 for wide screens, 4:5 for
+ *   phones. A single widescreen cut lost 64% of its width to
+ *   object-cover in a phone's tall hero — measured, not guessed — which
+ *   is why paintings were appearing with their sides missing.
+ *
+ * • object-contain, never cover. Nothing is cropped by CSS. The
+ *   letterbox is invisible because the film's wall is the same
+ *   near-black as the page behind it.
  *
  * • It PAUSES off-screen and on hidden tabs. A looping video running
  *   forever behind a section the visitor has left is a battery cost,
@@ -41,18 +46,19 @@ export default function Hero() {
   const inView = useInView(ref, { amount: 0.2 });
 
   const reduced = useMediaQuery("(prefers-reduced-motion: reduce)");
-  const wide = useMediaQuery("(min-width: 768px)");
+
+  /* The film's shape is chosen at 1024px, not at the 768px layout
+     breakpoint. A portrait tablet is 3:4 — far closer to the 4:5 cut
+     than to 16:9, which would sit in it as a thin band. */
+  const landscapeCut = useMediaQuery("(min-width: 1024px)");
 
   const hydrated = useHydrated();
 
-  /* Held back until the client has measured the viewport — see
-     useHydrated. 1080p is 3.2MB, 720p is 1.4MB. */
-  const src =
-    !hydrated || reduced
-      ? null
-      : wide
-        ? "/film/hero-1080.mp4"
-        : "/film/hero-720.mp4";
+  /* Held back until the client has measured the viewport, so the wrong
+     shape is never fetched first — see useHydrated. */
+  const cut = landscapeCut ? "hero-1080" : "hero-portrait";
+  const src = !hydrated || reduced ? null : `/film/${cut}.mp4`;
+  const poster = `/film/${cut}-poster.jpg`;
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -96,15 +102,15 @@ export default function Hero() {
         {reduced ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src="/film/poster.jpg"
+            src={poster}
             alt="Peterkin Arts — a portrait in graphite"
-            className="absolute inset-0 h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full object-contain"
           />
         ) : (
           <video
             ref={videoRef}
             src={src ?? undefined}
-            poster="/film/poster.jpg"
+            poster={poster}
             muted
             loop
             playsInline
@@ -113,8 +119,9 @@ export default function Hero() {
             aria-label="Five paintings by Peterkin Arts"
             /* Absolute rather than h-full: as a flex child the
                percentage height collapsed and the film letterboxed
-               into a band with dead space under it on phones. */
-            className="absolute inset-0 h-full w-full object-cover"
+               into a band with dead space under it on phones.
+               object-CONTAIN so no painting is ever cut at the sides. */
+            className="absolute inset-0 h-full w-full object-contain"
           />
         )}
 

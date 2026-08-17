@@ -68,7 +68,9 @@ export default function Nav() {
           <a
             href="#top"
             onClick={close}
-            className="flex items-center gap-3 transition-opacity hover:opacity-70"
+            /* -my-2 py-2 keeps the visual position but grows the hit
+               area to ~44px, the minimum comfortable thumb target. */
+            className="-my-2 flex items-center gap-3 py-2 transition-opacity hover:opacity-70"
             aria-label={`${artist.name} — back to top`}
           >
             {/* The monogram alone: the full lockup contains the wordmark,
@@ -95,7 +97,9 @@ export default function Nav() {
             aria-expanded={open}
             aria-controls="site-menu"
             aria-label={open ? "Close menu" : "Open menu"}
-            className="group -mr-1 flex cursor-pointer flex-col items-end gap-[5px] p-2"
+            /* min-h/min-w 44px: three hairlines plus padding measured
+               only 29px tall, well under a comfortable tap target. */
+            className="group -mr-2 flex min-h-11 min-w-11 cursor-pointer flex-col items-end justify-center gap-[5px] p-2"
           >
             <motion.span
               animate={open ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }}
@@ -170,7 +174,7 @@ export default function Nav() {
                 {artist.contact.phone && (
                   <a
                     href={`tel:${artist.contact.phone.replace(/[^\d+]/g, "")}`}
-                    className="font-display text-lg text-ash transition-colors hover:text-paper md:text-xl"
+                    className="w-fit py-1 font-display text-lg text-ash transition-colors hover:text-paper md:text-xl"
                   >
                     {artist.contact.phone}
                   </a>
@@ -179,7 +183,7 @@ export default function Nav() {
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="label mt-1 w-fit border-b border-rule pb-1 transition-colors hover:border-brass hover:text-brass"
+                  className="label mt-1 w-fit border-b border-rule py-1.5 transition-colors hover:border-brass hover:text-brass"
                 >
                   Message on WhatsApp
                 </a>
@@ -193,7 +197,7 @@ export default function Nav() {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="label transition-colors hover:text-paper"
+                    className="label w-fit py-1.5 transition-colors hover:text-paper"
                   >
                     {link.label}
                   </a>

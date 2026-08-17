@@ -61,7 +61,7 @@ export default function Contact() {
               /* Strip spaces but keep the leading + so the tel: link
                  dials correctly from outside Nigeria. */
               href={`tel:${artist.contact.phone.replace(/[^\d+]/g, "")}`}
-              className="label w-fit transition-colors hover:text-paper"
+              className="label flex min-h-11 w-fit items-center transition-colors hover:text-paper"
             >
               {artist.contact.phone}
             </a>
@@ -84,7 +84,7 @@ export default function Contact() {
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="label transition-colors hover:text-paper"
+              className="label flex min-h-11 items-center transition-colors hover:text-paper"
             >
               {link.label}
             </a>
