@@ -13,7 +13,8 @@ export type Artist = {
   name: string;
   discipline: string;
   based: string;
-  tagline: string;
+  headline: string;
+  subline: string;
   /** "Meet the Artist" — the About section, in order. */
   about: string[];
   contact: { email: string; phone: string; enquiries: string };
@@ -26,10 +27,12 @@ export const artist: Artist = {
   discipline: "Portraits in graphite and colour",
   based: "FCT Abuja, Nigeria",
 
-  /* The opening shot is the cubist canvas, so this line has to carry
-     both practices — a graphite-only tagline read as a caption for the
-     wrong painting. */
-  tagline: "A face held close in graphite, then taken apart in colour.",
+  /* The opening line now says what he does and who it is for, rather
+     than describing the work poetically. A visitor who has never heard
+     of him should understand the offer before they scroll. */
+  headline: "Portraits That Preserve More Than a Face.",
+  subline:
+    "Contemporary portraiture in graphite, charcoal, acrylic and oil — created to capture character, emotion and presence.",
 
   about: [
     "Peterkin is a Nigerian artist based in Abuja, working mostly in portraiture — graphite, charcoal, acrylic, and oil.",
@@ -131,3 +134,28 @@ export const whatsappUrl = waLink(
 export const commissionWhatsappUrl = waLink(
   "Hello Peterkin, I would like to commission a portrait.",
 );
+
+/**
+ * THE INTRODUCTION — the section directly under the hero.
+ * The artist's words, verbatim.
+ */
+export const intro = {
+  label: "Art That Feels Personal",
+  paragraphs: [
+    "At Peterkin Arts, portraiture is more than reproducing a face.",
+    "Every work is created to capture the character, emotion and presence of the person behind the image. From highly detailed graphite and charcoal drawings to expressive acrylic and oil paintings, each portrait is carefully built layer by layer.",
+  ],
+  cta: "Meet the Artist",
+} as const;
+
+/**
+ * THE CLOSING SECTION. Was a bare email address; now it asks for the
+ * commission and lists the three ways to reach him.
+ */
+export const closing = {
+  heading: "Let's Create Something Personal",
+  lead: "Have a portrait in mind?",
+  body: "Whether you're commissioning a portrait for yourself, a loved one, a special occasion or your collection, I'd love to hear about it.",
+  detailsTitle: "Start Your Commission",
+  cta: "Message on WhatsApp",
+} as const;

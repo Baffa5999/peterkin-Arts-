@@ -6,10 +6,10 @@ import { LightboxProvider } from "@/components/Lightbox";
 
 export const metadata: Metadata = {
   title: `${artist.name} — ${artist.discipline}`,
-  description: artist.tagline,
+  description: artist.subline,
   openGraph: {
     title: `${artist.name} — ${artist.discipline}`,
-    description: artist.tagline,
+    description: artist.subline,
     type: "website",
   },
 };

@@ -1,49 +1,41 @@
 "use client";
 
-import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useEffect, useRef } from "react";
 import { artist } from "@/content/artist";
 import { useHydrated, useMediaQuery } from "@/lib/hooks";
 
 /**
- * THE COLD OPEN — a short film.
+ * THE OPENING
  *
- * One looping clip cut from five paintings: a push-in on the graphite
- * suit portrait, a drift across the ankara patchwork, a macro pass over
- * mark-making, a tilt up the saxophone figure, and a pull-back off the
- * dancer. Four are real camera moves over the actual scans; the last is
- * generated, and only because it is an abstract.
+ * Restructured around what a first-time visitor needs, in order: who he
+ * is, what he makes, what to do next — and only then the work.
  *
- * The rules this player follows, and why:
+ * The film that used to fill this section now sits BENEATH the copy
+ * rather than behind it. Text over moving pictures reads as atmosphere;
+ * text above them reads as a proposition, and this section has to do
+ * the second job. The film still opens on the strongest portrait, so the
+ * "strongest work underneath" is the film's first shot.
  *
- * • The POSTER is the load-bearing part. It is a real frame of the film
- *   and shows instantly. It is also exactly what iOS Low Power Mode
- *   users see, because that mode refuses autoplay outright — so it has
- *   to read as a deliberate still, never as a loading state.
+ * Player rules, unchanged and still load-bearing:
  *
+ * • Two cuts. 16:9 for wide screens, 4:5 for phones, because a single
+ *   widescreen cut lost 64% of its width to object-cover in a tall
+ *   frame — measured, which is why paintings appeared with their sides
+ *   missing.
+ * • object-contain, never cover, so nothing is cropped by CSS. The
+ *   letterbox is invisible: the film's wall is the page's own black.
  * • muted + playsInline + autoPlay is the only combination browsers
- *   allow to start on its own. The clip is silent at the file level —
- *   there is no audio track at all, which also keeps it smaller.
- *
- * • THE FILM IS CUT IN TWO SHAPES. 16:9 for wide screens, 4:5 for
- *   phones. A single widescreen cut lost 64% of its width to
- *   object-cover in a phone's tall hero — measured, not guessed — which
- *   is why paintings were appearing with their sides missing.
- *
- * • object-contain, never cover. Nothing is cropped by CSS. The
- *   letterbox is invisible because the film's wall is the same
- *   near-black as the page behind it.
- *
- * • It PAUSES off-screen and on hidden tabs. A looping video running
- *   forever behind a section the visitor has left is a battery cost,
- *   and much of this audience is on a phone.
- *
- * • prefers-reduced-motion gets the poster and no video element at all.
+ *   allow to start unprompted. The file is silent — no audio track.
+ * • The poster carries the load when autoplay is refused, which iOS Low
+ *   Power Mode does outright.
+ * • Playback pauses off-screen and on hidden tabs; prefers-reduced-motion
+ *   gets the poster and no video element at all.
  */
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const inView = useInView(ref, { amount: 0.2 });
+  const inView = useInView(ref, { amount: 0.15 });
 
   const reduced = useMediaQuery("(prefers-reduced-motion: reduce)");
 
@@ -51,35 +43,19 @@ export default function Hero() {
      breakpoint. A portrait tablet is 3:4 — far closer to the 4:5 cut
      than to 16:9, which would sit in it as a thin band. */
   const landscapeCut = useMediaQuery("(min-width: 1024px)");
-
   const hydrated = useHydrated();
 
-  /* Held back until the client has measured the viewport, so the wrong
-     shape is never fetched first — see useHydrated. */
   const cut = landscapeCut ? "hero-1080" : "hero-portrait";
   const src = !hydrated || reduced ? null : `/film/${cut}.mp4`;
   const poster = `/film/${cut}-poster.jpg`;
 
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end start"],
-  });
-  const filmScale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
-  const filmOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
-  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "60%"]);
-  const textOpacity = useTransform(scrollYProgress, [0, 0.45], [1, 0]);
-
-  /* Play only while it is actually being watched. */
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !src) return;
-
     const sync = () => {
-      const shouldPlay = inView && !document.hidden;
-      if (shouldPlay) void video.play().catch(() => {});
+      if (inView && !document.hidden) void video.play().catch(() => {});
       else video.pause();
     };
-
     sync();
     document.addEventListener("visibilitychange", sync);
     return () => document.removeEventListener("visibilitychange", sync);
@@ -88,23 +64,63 @@ export default function Hero() {
   return (
     <section
       ref={ref}
-      className="relative flex min-h-[100svh] w-full flex-col overflow-hidden bg-void md:block"
+      /* overflow-hidden because the spotlight glow deliberately bleeds
+         18% past its parent; without clipping here it pushed the page
+         38px wider than the viewport and produced a horizontal scroll. */
+      className="relative overflow-hidden bg-void px-6 pt-28 pb-16 md:px-14 md:pt-36 md:pb-20"
       aria-label="Introduction"
     >
-      {/* The film ------------------------------------------------- */}
+      {/* Who, what, and what to do next -------------------------- */}
       <motion.div
-        style={{ scale: filmScale, opacity: filmOpacity }}
-        /* On phones the film takes all the height left above the title
-           rather than sitting as a 16:9 band with dead space beneath —
-           object-cover crops the widescreen frame to a tall window. */
-        className="relative w-full min-h-0 flex-1 md:absolute md:inset-0 md:h-full md:flex-none"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+        className="mx-auto max-w-5xl"
       >
+        <p className="label">{artist.name}</p>
+
+        <h1 className="display mt-5 max-w-4xl text-[clamp(2.5rem,7.5vw,5.75rem)]">
+          {artist.headline}
+        </h1>
+
+        <p className="mt-7 max-w-2xl text-base leading-relaxed text-ash md:text-lg">
+          {artist.subline}
+        </p>
+
+        {/* Two doors: see the work, or start a commission. The gold one
+            is the commission — it is the action worth money. */}
+        <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:gap-4">
+          <a
+            href="#works"
+            className="inline-flex min-h-13 items-center justify-center border border-rule px-7 py-3.5 transition-colors duration-300 hover:border-paper"
+          >
+            <span className="label text-paper">View the Collection</span>
+          </a>
+
+          <a
+            href="#commission"
+            className="inline-flex min-h-13 items-center justify-center bg-brass px-7 py-3.5 transition-colors duration-300 hover:bg-brass-lit"
+          >
+            <span className="label text-void">Commission a Portrait</span>
+          </a>
+        </div>
+      </motion.div>
+
+      {/* The work, underneath ------------------------------------ */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.4, delay: 0.3 }}
+        className="relative mx-auto mt-14 max-w-5xl md:mt-20"
+      >
+        <div className="spotlight absolute inset-0" />
+
         {reduced ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={poster}
-            alt="Peterkin Arts — a portrait in graphite"
-            className="absolute inset-0 h-full w-full object-contain"
+            alt="A graphite portrait by Peterkin Arts"
+            className="relative mx-auto h-auto w-full max-w-3xl object-contain"
           />
         ) : (
           <video
@@ -117,60 +133,9 @@ export default function Hero() {
             autoPlay
             preload="auto"
             aria-label="Five paintings by Peterkin Arts"
-            /* Absolute rather than h-full: as a flex child the
-               percentage height collapsed and the film letterboxed
-               into a band with dead space under it on phones.
-               object-CONTAIN so no painting is ever cut at the sides. */
-            className="absolute inset-0 h-full w-full object-contain"
+            className="relative mx-auto h-auto max-h-[76svh] w-full max-w-3xl object-contain"
           />
         )}
-
-        {/* Grade: hold the edges down so the type stays readable and
-            the film sits in the same dark room as the rest of the site. */}
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(ellipse at 55% 45%, transparent 0%, rgba(7,6,5,0.30) 60%, rgba(7,6,5,0.80) 100%)",
-          }}
-        />
-        {/* The type sits over whichever painting happens to be on screen,
-            including the bright ankara patchwork, so the scrim has to be
-            strong enough to carry the label at its lowest contrast. */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-void via-void/80 to-transparent" />
-      </motion.div>
-
-      {/* Title card ------------------------------------------------ */}
-      <motion.div
-        style={{ y: textY, opacity: textOpacity }}
-        className="relative z-20 shrink-0 px-6 pt-8 pb-12 md:absolute md:inset-x-0 md:bottom-0 md:px-14 md:pt-0 md:pb-20"
-      >
-        <motion.p
-          className="label"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-        >
-          {artist.discipline} — {artist.based}
-        </motion.p>
-
-        <motion.h1
-          className="display mt-3 text-[clamp(2.8rem,9vw,7.5rem)]"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.05, duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-        >
-          Peterkin <span className="text-brass italic">Arts</span>
-        </motion.h1>
-
-        <motion.p
-          className="mt-4 max-w-md font-display text-lg leading-snug text-ash italic md:text-xl"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.7, duration: 1.6 }}
-        >
-          {artist.tagline}
-        </motion.p>
       </motion.div>
     </section>
   );
