@@ -75,7 +75,7 @@ export const works: Work[] = [
     tint: "#281818",
     caption: "Hair as architecture. Light caught in every strand.",
     artistWord:
-      "A beard is not one thing. It is thousands of separate marks that decide to become a beard.",
+      "The braids took longer than the face. Every strand has to travel the right way.",
   },
   {
     slug: "the-turban",
@@ -135,7 +135,7 @@ export const works: Work[] = [
     tint: "#e8e8e8",
     caption: "Tension held in colour.",
     artistWord:
-      "Nothing is outlined. Edges are found by putting tone next to tone.",
+      "Here the outline does the work: black lines first, then colour poured into the shapes.",
   },
   {
     slug: "two-faces",
@@ -158,10 +158,8 @@ export const works: Work[] = [
     height: 1244,
     tint: "#e8e8d8",
     caption: "Shadow as another kind of portrait.",
-    /* Was the paper line, which belongs to a graphite drawing — this is
-       acrylic on canvas, and there is no paper in it. */
     artistWord:
-      "The face is barely there. The hat and the shoulders carry the likeness instead.",
+      "The hat holds the whole figure together. Everything below it is movement.",
   },
 ];
 
