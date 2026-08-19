@@ -13,6 +13,7 @@ import { freezeScroll, unfreezeScroll } from "@/lib/lenis";
 
 const items = [
   { label: "Works", href: "#works" },
+  { label: "Commission", href: "#commission" },
   { label: "About", href: "#about" },
   { label: "Contact", href: "#contact" },
 ];
@@ -70,7 +71,11 @@ export default function Nav() {
             onClick={close}
             /* -my-2 py-2 keeps the visual position but grows the hit
                area to ~44px, the minimum comfortable thumb target. */
-            className="-my-2 flex items-center gap-3 py-2 transition-opacity hover:opacity-70"
+            /* min-h-11 min-w-11 with the negative margin: keeps the
+               visual position but gives the logo a full 44px target.
+               Width matters as much as height — on phones the wordmark
+               is hidden and the monogram alone is only 24px across. */
+            className="-my-2 flex min-h-11 min-w-11 items-center gap-3 py-2 transition-opacity hover:opacity-70"
             aria-label={`${artist.name} — back to top`}
           >
             {/* The monogram alone: the full lockup contains the wordmark,

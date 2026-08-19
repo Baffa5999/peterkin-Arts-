@@ -52,20 +52,28 @@ html.lenis body {
   overflow: hidden;
 }
 
-/* Typographic utilities -------------------------------------------- */
-.label {
-  font-family: var(--font-sans);
-  font-size: 0.6875rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--color-dust);
-}
+/* Typographic helpers -----------------------------------------------
+   Wrapped in @layer components so Tailwind's utilities WIN against
+   them. Defined bare, these sit after the utility layer in the
+   cascade and silently beat it: `.label text-brass` rendered dust,
+   `.label normal-case` rendered uppercase, and a text-void button
+   label came out grey on brass. Anything that looks like it is
+   ignoring a utility class was this. */
+@layer components {
+  .label {
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-dust);
+  }
 
-.display {
-  font-family: var(--font-display);
-  font-weight: 300;
-  line-height: 0.94;
-  letter-spacing: -0.02em;
+  .display {
+    font-family: var(--font-display);
+    font-weight: 300;
+    line-height: 0.94;
+    letter-spacing: -0.02em;
+  }
 }
 
 /* The spotlight — a soft pool of light behind a hung canvas --------- */

@@ -4,15 +4,14 @@ import { motion } from "framer-motion";
 import { artist } from "@/content/artist";
 
 /**
- * ABOUT
+ * MEET THE ARTIST
  *
- * The statement and the studio note, merged. These used to be two
- * sections either side of the site, the second one a pinned parallax
- * panel; together they are simply what the artist has to say.
+ * The artist's own words. This used to be two sections either side of
+ * the site — a statement and a pinned studio panel — carrying copy I
+ * had written to the right length so the layout could be judged. Both
+ * are gone; this is his.
  */
 export default function About() {
-  const paragraphs = [...artist.statement, ...artist.process];
-
   return (
     <section
       id="about"
@@ -27,11 +26,11 @@ export default function About() {
           viewport={{ once: true }}
           transition={{ duration: 1 }}
         >
-          About
+          Meet the Artist
         </motion.p>
 
         <div>
-          {paragraphs.map((para, i) => (
+          {artist.about.map((para, i) => (
             <motion.p
               key={i}
               className="mb-8 font-display text-[clamp(1.4rem,2.6vw,2.2rem)] leading-[1.4] text-paper last:mb-0"
