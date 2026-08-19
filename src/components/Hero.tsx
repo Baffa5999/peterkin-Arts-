@@ -8,14 +8,10 @@ import { useHydrated, useMediaQuery } from "@/lib/hooks";
 /**
  * THE OPENING
  *
- * Restructured around what a first-time visitor needs, in order: who he
- * is, what he makes, what to do next — and only then the work.
- *
- * The film that used to fill this section now sits BENEATH the copy
- * rather than behind it. Text over moving pictures reads as atmosphere;
- * text above them reads as a proposition, and this section has to do
- * the second job. The film still opens on the strongest portrait, so the
- * "strongest work underneath" is the film's first shot.
+ * The film leads, then the copy: work first, words second. It is not
+ * behind the text (that reads as atmosphere) and not below it (that
+ * buries it) — it opens the page on its own, and the proposition follows
+ * directly underneath.
  *
  * Player rules, unchanged and still load-bearing:
  *
@@ -70,12 +66,43 @@ export default function Hero() {
       className="relative overflow-hidden bg-void px-6 pt-28 pb-16 md:px-14 md:pt-36 md:pb-20"
       aria-label="Introduction"
     >
-      {/* Who, what, and what to do next -------------------------- */}
+      {/* The work, first ---------------------------------------- */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.4 }}
+        className="relative mx-auto max-w-5xl"
+      >
+        <div className="spotlight absolute inset-0" />
+
+        {reduced ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={poster}
+            alt="A graphite portrait by Peterkin Arts"
+            className="relative mx-auto h-auto w-full max-w-3xl object-contain"
+          />
+        ) : (
+          <video
+            ref={videoRef}
+            src={src ?? undefined}
+            poster={poster}
+            muted
+            loop
+            playsInline
+            autoPlay
+            preload="auto"
+            aria-label="Five paintings by Peterkin Arts"
+            className="relative mx-auto h-auto max-h-[76svh] w-full max-w-3xl object-contain"
+          />
+        )}
+      </motion.div>
+      {/* Then who, what, and what to do next --------------------- */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-        className="mx-auto max-w-5xl"
+        transition={{ duration: 1.1, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+        className="mx-auto mt-14 max-w-5xl md:mt-16"
       >
         <p className="label">{artist.name}</p>
 
@@ -106,37 +133,6 @@ export default function Hero() {
         </div>
       </motion.div>
 
-      {/* The work, underneath ------------------------------------ */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.4, delay: 0.3 }}
-        className="relative mx-auto mt-14 max-w-5xl md:mt-20"
-      >
-        <div className="spotlight absolute inset-0" />
-
-        {reduced ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={poster}
-            alt="A graphite portrait by Peterkin Arts"
-            className="relative mx-auto h-auto w-full max-w-3xl object-contain"
-          />
-        ) : (
-          <video
-            ref={videoRef}
-            src={src ?? undefined}
-            poster={poster}
-            muted
-            loop
-            playsInline
-            autoPlay
-            preload="auto"
-            aria-label="Five paintings by Peterkin Arts"
-            className="relative mx-auto h-auto max-h-[76svh] w-full max-w-3xl object-contain"
-          />
-        )}
-      </motion.div>
     </section>
   );
 }
