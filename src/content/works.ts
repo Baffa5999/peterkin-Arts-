@@ -158,8 +158,10 @@ export const works: Work[] = [
     height: 1244,
     tint: "#e8e8d8",
     caption: "Shadow as another kind of portrait.",
+    /* Was the paper line, which belongs to a graphite drawing — this is
+       acrylic on canvas, and there is no paper in it. */
     artistWord:
-      "I want the paper to disappear. Only the person should remain.",
+      "The face is barely there. The hat and the shoulders carry the likeness instead.",
   },
 ];
 
